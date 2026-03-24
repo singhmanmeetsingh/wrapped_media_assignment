@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.db
+
+# Node
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Docker
+pgdata/
+
+# IDE
+.vscode/
+.idea/
+
+# Env
+.env

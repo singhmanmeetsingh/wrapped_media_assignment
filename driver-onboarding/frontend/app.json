@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "driver-onboarding",
+    "slug": "driver-onboarding",
+    "version": "1.0.0",
+    "platforms": ["web"],
+    "scheme": "driver-onboarding",
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from adapters.inbound.api import campaigns, drivers, health, vehicles
+from adapters.inbound.api import auth, campaigns, drivers, health, vehicles
 from config import settings
 
 app = FastAPI(title="Driver Onboarding API")
@@ -20,6 +20,7 @@ async def root():
     return {"message": "API is running"}
 
 
+app.include_router(auth.router, prefix="/api")
 app.include_router(drivers.router, prefix="/api")
 app.include_router(vehicles.router, prefix="/api")
 app.include_router(campaigns.router, prefix="/api")

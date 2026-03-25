@@ -7,6 +7,7 @@ from adapters.inbound.schemas.driver import DriverCreate, DriverDetailResponse, 
 from adapters.outbound.persistence.database import get_db
 from adapters.outbound.persistence.repositories.campaign_repo import SqlAlchemyCampaignRepository
 from adapters.outbound.persistence.repositories.driver_repo import SqlAlchemyDriverRepository
+from adapters.inbound.auth.dependencies import get_current_user
 from domain.services.driver_service import DriverNotFoundError, DriverService, DuplicateEmailError
 
 router = APIRouter()
@@ -39,7 +40,11 @@ async def create_driver(data: DriverCreate, service: DriverService = Depends(_ge
 
 
 @router.get("/drivers/{driver_id}", response_model=DriverDetailResponse)
-async def get_driver(driver_id: UUID, service: DriverService = Depends(_get_service)):
+async def get_driver(
+    driver_id: UUID,
+    _user: dict = Depends(get_current_user),
+    service: DriverService = Depends(_get_service),
+):
     try:
         return await service.get_driver(driver_id)
     except DriverNotFoundError:

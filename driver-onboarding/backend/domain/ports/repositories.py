@@ -5,6 +5,7 @@ from uuid import UUID
 
 from domain.entities.campaign import Campaign
 from domain.entities.driver import Driver
+from domain.entities.user import User
 from domain.entities.vehicle import Vehicle
 
 
@@ -48,3 +49,11 @@ class CampaignRepository(ABC):
     async def get_signups_over_time(
         self, campaign_uuid: UUID, start_date: Optional[datetime], end_date: Optional[datetime]
     ) -> list[dict]: ...
+
+
+class UserRepository(ABC):
+    @abstractmethod
+    async def save(self, user: User) -> User: ...
+
+    @abstractmethod
+    async def find_by_email(self, email: str) -> Optional[User]: ...

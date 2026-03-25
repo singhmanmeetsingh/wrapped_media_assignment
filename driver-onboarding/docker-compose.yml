@@ -37,7 +37,7 @@ services:
     depends_on:
       - backend
     environment:
-      EXPO_PUBLIC_API_URL: http://localhost:8001
+      EXPO_PUBLIC_API_URL: http://localhost:8000
     volumes:
       - ./frontend:/app
       - /app/node_modules

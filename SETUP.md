@@ -90,3 +90,52 @@ docker-compose down
 docker-compose down -v
 docker-compose up --build
 ```
+
+## Running Tests Locally (Outside Docker)
+
+If you prefer to run tests on your host machine instead of inside the Docker container, follow these steps:
+
+### 1. Start the database
+
+```bash
+cd driver-onboarding
+docker compose up -d db
+```
+
+### 2. Create the test database (one-time)
+
+```bash
+docker compose exec db psql -U driver_app -d driver_onboarding -c "CREATE DATABASE driver_onboarding_test;"
+```
+
+### 3. Install Python dependencies
+
+```bash
+cd driver-onboarding/backend
+pip install -r requirements.txt
+```
+
+### 4. Set environment variables
+
+The Docker DB is exposed on port **5435** locally, but the default config points to `db:5432` (Docker internal hostname). Override it:
+
+```bash
+export DATABASE_URL="postgresql+asyncpg://driver_app:driver_app_dev@localhost:5435/driver_onboarding"
+export SMTP_HOST=localhost
+export SMTP_PORT=1026
+```
+
+### 5. Run the tests
+
+```bash
+cd driver-onboarding/backend
+
+# Run all tests
+pytest -v
+
+# Run a specific test file
+pytest -v tests/test_auth.py
+
+# Run a single test function
+pytest -v tests/test_auth.py::test_function_name
+```

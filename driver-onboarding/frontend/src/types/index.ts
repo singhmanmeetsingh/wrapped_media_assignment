@@ -5,6 +5,7 @@ export interface DriverInput {
   license_number: string;
   license_state: string;
   ref?: string;
+  invitation_token?: string;
 }
 
 export interface DriverResponse {
@@ -54,6 +55,7 @@ export interface CampaignStats {
   total_signups: number;
   completed_signups: number;
   conversion_rate: number;
+  declined_invitations: number;
   signups_over_time: DailySignupCount[];
 }
 

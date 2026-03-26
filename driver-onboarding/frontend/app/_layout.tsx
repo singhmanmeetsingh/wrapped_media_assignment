@@ -7,9 +7,14 @@ export default function RootLayout() {
     <Provider store={store}>
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: '#3b82f6' },
-          headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold' },
+          headerStyle: { backgroundColor: '#0A0A0A' },
+          headerTintColor: '#CCFF00',
+          headerTitleStyle: {
+            fontWeight: '800',
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          },
+          contentStyle: { backgroundColor: '#0A0A0A' },
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -18,7 +23,7 @@ export default function RootLayout() {
         <Stack.Screen name="signup" options={{ title: 'Driver Sign Up' }} />
         <Stack.Screen name="vehicle/[driverId]" options={{ title: 'Add Vehicle' }} />
         <Stack.Screen name="success" options={{ title: 'Success', headerShown: false }} />
-        <Stack.Screen name="dashboard" options={{ title: 'Campaign Dashboard' }} />
+        <Stack.Screen name="dashboard" options={{ title: 'Dashboard' }} />
       </Stack>
     </Provider>
   );

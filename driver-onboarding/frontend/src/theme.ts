@@ -1,0 +1,225 @@
+import { StyleSheet } from 'react-native';
+
+export const colors = {
+  lime: '#CCFF00',
+  limeDark: '#B8E600',
+  dark900: '#0A0A0A',
+  dark800: '#141414',
+  dark700: '#1A1A1A',
+  dark600: '#222222',
+  dark500: '#2A2A2A',
+  dark400: '#333333',
+  white: '#FFFFFF',
+  neutral300: '#D4D4D4',
+  neutral400: '#A3A3A3',
+  neutral500: '#737373',
+  neutral600: '#525252',
+  red400: '#F87171',
+  red500: '#EF4444',
+  red900_30: 'rgba(127, 29, 29, 0.3)',
+  lime_10: 'rgba(204, 255, 0, 0.1)',
+  lime_30: 'rgba(204, 255, 0, 0.3)',
+};
+
+export const LOGO_URI = 'https://www.wrappedmedia.ca/hs-fs/hubfs/Wrapped_Logo_W-1.png?width=50&height=35&name=Wrapped_Logo_W-1.png';
+
+export const shared = StyleSheet.create({
+  screenBg: {
+    flex: 1,
+    backgroundColor: colors.dark900,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 440,
+    backgroundColor: colors.dark700,
+    borderRadius: 16,
+    padding: 32,
+    borderWidth: 1,
+    borderColor: colors.dark400,
+  },
+  logo: {
+    width: 50,
+    height: 35,
+    marginBottom: 24,
+  },
+  heading: {
+    color: colors.white,
+    fontSize: 28,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 4,
+  },
+  subtitle: {
+    color: colors.neutral400,
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  sectionLabel: {
+    color: colors.lime,
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 4,
+  },
+  label: {
+    color: colors.neutral300,
+    fontSize: 13,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 6,
+  },
+  input: {
+    backgroundColor: colors.dark800,
+    borderWidth: 1,
+    borderColor: colors.dark400,
+    color: colors.white,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  inputError: {
+    borderColor: colors.red500,
+  },
+  fieldContainer: {
+    marginBottom: 16,
+  },
+  fieldContainerLast: {
+    marginBottom: 24,
+  },
+  errorText: {
+    color: colors.red400,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  errorBox: {
+    backgroundColor: colors.red900_30,
+    borderWidth: 1,
+    borderColor: colors.red500,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  errorBoxText: {
+    color: colors.red400,
+    fontSize: 14,
+  },
+  successBox: {
+    backgroundColor: colors.lime_10,
+    borderWidth: 1,
+    borderColor: colors.lime_30,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginBottom: 16,
+  },
+  successBoxText: {
+    color: colors.lime,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  buttonPrimary: {
+    backgroundColor: colors.lime,
+    borderWidth: 1,
+    borderColor: colors.lime,
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center' as const,
+  },
+  buttonPrimaryText: {
+    color: colors.dark900,
+    fontSize: 15,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+  },
+  buttonDisabled: {
+    backgroundColor: colors.dark600,
+    borderColor: colors.dark400,
+  },
+  buttonDisabledText: {
+    color: colors.neutral500,
+  },
+  buttonOutline: {
+    borderWidth: 1,
+    borderColor: colors.lime,
+    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    alignItems: 'center' as const,
+  },
+  buttonOutlineText: {
+    color: colors.lime,
+    fontSize: 14,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+  },
+  buttonSecondary: {
+    borderWidth: 1,
+    borderColor: colors.dark400,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center' as const,
+  },
+  buttonSecondaryText: {
+    color: colors.neutral400,
+    fontSize: 13,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  linkText: {
+    color: colors.lime,
+    fontSize: 14,
+    textAlign: 'center' as const,
+    marginTop: 20,
+  },
+});
+
+export const webSelectStyle = (hasError: boolean, hasValue: boolean): React.CSSProperties => ({
+  backgroundColor: colors.dark800,
+  color: hasValue ? colors.white : colors.neutral600,
+  border: `1px solid ${hasError ? colors.red500 : colors.dark400}`,
+  borderRadius: 8,
+  padding: '12px 16px',
+  fontSize: 16,
+  width: '100%',
+  outline: 'none',
+  appearance: 'none',
+  WebkitAppearance: 'none' as any,
+  boxSizing: 'border-box',
+});
+
+export const webDateStyle = (hasError: boolean): React.CSSProperties => ({
+  backgroundColor: colors.dark800,
+  color: colors.white,
+  border: `1px solid ${hasError ? colors.red500 : colors.dark400}`,
+  borderRadius: 8,
+  padding: '12px 16px',
+  fontSize: 16,
+  width: '100%',
+  outline: 'none',
+  colorScheme: 'dark',
+  boxSizing: 'border-box',
+});
+
+export const webInputStyle: React.CSSProperties = {
+  backgroundColor: colors.dark800,
+  color: colors.white,
+  border: `1px solid ${colors.dark400}`,
+  borderRadius: 8,
+  padding: '10px 14px',
+  fontSize: 14,
+  outline: 'none',
+  boxSizing: 'border-box',
+};

@@ -16,6 +16,7 @@ from adapters.outbound.persistence.repositories.invitation_repo import SqlAlchem
 from domain.services.invitation_service import (
     CampaignNotFoundError,
     InvitationAlreadyUsedError,
+    InvitationDeclinedError,
     InvitationService,
     InvalidInvitationError,
 )
@@ -68,4 +69,35 @@ async def validate_invitation(
         raise HTTPException(
             status_code=status.HTTP_410_GONE,
             detail="This invitation has already been used",
+        )
+    except InvitationDeclinedError:
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="This invitation has been declined",
+        )
+
+
+@router.post("/invitations/{token}/decline", status_code=status.HTTP_200_OK)
+async def decline_invitation(
+    token: UUID,
+    service: InvitationService = Depends(_get_service),
+):
+    """Public: driver declines their invitation."""
+    try:
+        await service.decline(token)
+        return {"detail": "Invitation declined"}
+    except InvalidInvitationError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid invitation link",
+        )
+    except InvitationAlreadyUsedError:
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="This invitation has already been used",
+        )
+    except InvitationDeclinedError:
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="This invitation has already been declined",
         )

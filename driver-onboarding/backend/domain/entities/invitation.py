@@ -13,3 +13,5 @@ class Invitation:
     used: bool
     created_at: datetime
     used_at: Optional[datetime] = None
+    declined: bool = False
+    declined_at: Optional[datetime] = None

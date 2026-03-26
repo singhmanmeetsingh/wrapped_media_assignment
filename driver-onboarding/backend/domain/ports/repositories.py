@@ -51,6 +51,12 @@ class CampaignRepository(ABC):
         self, campaign_uuid: UUID, start_date: Optional[datetime], end_date: Optional[datetime]
     ) -> list[dict]: ...
 
+    @abstractmethod
+    async def get_total_invitations(self, campaign_uuid: UUID) -> int: ...
+
+    @abstractmethod
+    async def get_declined_invitations(self, campaign_uuid: UUID) -> int: ...
+
 
 class InvitationRepository(ABC):
     @abstractmethod
@@ -61,6 +67,9 @@ class InvitationRepository(ABC):
 
     @abstractmethod
     async def mark_used(self, token: UUID) -> None: ...
+
+    @abstractmethod
+    async def mark_declined(self, token: UUID) -> None: ...
 
 
 class UserRepository(ABC):

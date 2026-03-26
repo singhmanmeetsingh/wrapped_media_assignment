@@ -91,6 +91,30 @@ export async function createVehicle(
   });
 }
 
+export async function getCampaignRefs(): Promise<{ campaigns: { campaign_id: string; name: string }[] }> {
+  return request('/api/campaigns/refs');
+}
+
+export async function sendInvitation(data: { email: string; campaign_id: string }): Promise<any> {
+  return request('/api/invitations', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function validateInvitation(token: string): Promise<{
+  email: string;
+  campaign_id: string;
+  campaign_ref: string | null;
+  campaign_name: string | null;
+}> {
+  return request(`/api/invitations/${token}/validate`);
+}
+
+export async function declineInvitation(token: string): Promise<{ detail: string }> {
+  return request(`/api/invitations/${token}/decline`, { method: 'POST' });
+}
+
 export async function getCampaigns(
   startDate?: string,
   endDate?: string

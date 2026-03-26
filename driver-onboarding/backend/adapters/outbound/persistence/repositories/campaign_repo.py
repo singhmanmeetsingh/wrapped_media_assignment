@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from adapters.outbound.persistence.models.campaign import CampaignModel
 from adapters.outbound.persistence.models.driver import DriverModel
+from adapters.outbound.persistence.models.invitation import InvitationModel
 from adapters.outbound.persistence.models.vehicle import VehicleModel
 from domain.entities.campaign import Campaign
 from domain.ports.repositories import CampaignRepository
@@ -86,3 +87,22 @@ class SqlAlchemyCampaignRepository(CampaignRepository):
             .order_by(date_col)
         )
         return [{"date": str(row.date), "count": row.count} for row in result.all()]
+
+    async def get_total_invitations(self, campaign_uuid: UUID) -> int:
+        result = await self._session.execute(
+            select(func.count(InvitationModel.id)).where(
+                InvitationModel.campaign_id == campaign_uuid,
+            )
+        )
+        return result.scalar() or 0
+
+    async def get_declined_invitations(self, campaign_uuid: UUID) -> int:
+        result = await self._session.execute(
+            select(func.count(InvitationModel.id)).where(
+                and_(
+                    InvitationModel.campaign_id == campaign_uuid,
+                    InvitationModel.declined == True,
+                )
+            )
+        )
+        return result.scalar() or 0

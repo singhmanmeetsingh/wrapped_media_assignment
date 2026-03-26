@@ -30,10 +30,20 @@ class CampaignService:
             completed = await self._campaign_repo.get_completed_signups(
                 campaign.id, start_date, end_date
             )
-            conversion_rate = completed / total if total > 0 else 0.0
             signups_over_time = await self._campaign_repo.get_signups_over_time(
                 campaign.id, start_date, end_date
             )
+            total_invitations = await self._campaign_repo.get_total_invitations(campaign.id)
+            declined = await self._campaign_repo.get_declined_invitations(campaign.id)
+
+            # Conversion rate: completed signups / total invitations sent
+            # Falls back to completed/signups if no invitations tracked
+            if total_invitations > 0:
+                conversion_rate = completed / total_invitations
+            elif total > 0:
+                conversion_rate = completed / total
+            else:
+                conversion_rate = 0.0
 
             results.append(
                 {
@@ -44,6 +54,7 @@ class CampaignService:
                     "total_signups": total,
                     "completed_signups": completed,
                     "conversion_rate": round(conversion_rate, 4),
+                    "declined_invitations": declined,
                     "signups_over_time": signups_over_time,
                 }
             )

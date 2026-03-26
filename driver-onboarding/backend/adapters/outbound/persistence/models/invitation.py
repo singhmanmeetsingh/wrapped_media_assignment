@@ -19,3 +19,5 @@ class InvitationModel(Base):
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
     used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    declined: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    declined_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

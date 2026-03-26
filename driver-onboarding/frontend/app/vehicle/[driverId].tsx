@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Platform, Image, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useForm, Controller } from 'react-hook-form';
-import FormInput from '../../src/components/FormInput';
-import LoadingSpinner from '../../src/components/LoadingSpinner';
 import { createVehicle } from '../../src/api/client';
-import { styles, selectStyle, dateInputStyle } from '../styles/vehicle.styles';
+import { colors, shared, LOGO_URI, webSelectStyle, webDateStyle } from '../../src/theme';
 
 const YEARS = Array.from({ length: 2027 - 1990 + 1 }, (_, i) => (2027 - i).toString());
 
@@ -79,39 +77,56 @@ export default function VehicleScreen() {
     setApiError('');
   };
 
-  if (loadingDriver) return <LoadingSpinner message="Loading..." />;
+  if (loadingDriver) {
+    return (
+      <View style={[shared.screenBg, { alignItems: 'center', justifyContent: 'center' }]}>
+        <ActivityIndicator size="large" color={colors.lime} />
+        <Text style={{ color: colors.neutral400, marginTop: 16 }}>Loading...</Text>
+      </View>
+    );
+  }
+
+  const disabled = !isValid || loading;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
+    <ScrollView style={shared.screenBg} contentContainerStyle={shared.scrollContent}>
+      <View style={shared.card}>
+        <View style={{ alignItems: 'center', marginBottom: 24 }}>
+          <Image source={{ uri: LOGO_URI }} style={shared.logo} resizeMode="contain" />
+        </View>
+
         {driverName ? (
-          <Text style={styles.greeting}>Hi, {driverName.split(' ')[0]}!</Text>
+          <Text style={{ color: colors.neutral400, fontSize: 16, marginBottom: 4 }}>Hi, {driverName.split(' ')[0]}!</Text>
         ) : null}
-        <Text style={styles.title}>Register Your Vehicle</Text>
+
+        <Text style={shared.sectionLabel}>Step 2</Text>
+        <Text style={shared.heading}>REGISTER YOUR VEHICLE</Text>
+        <View style={{ marginBottom: 16 }} />
+
         {vehicleCount > 0 && (
-          <View style={styles.countBadge}>
-            <Text style={styles.countText}>
+          <View style={shared.successBox}>
+            <Text style={shared.successBoxText}>
               {vehicleCount} vehicle{vehicleCount > 1 ? 's' : ''} added
             </Text>
           </View>
         )}
 
         {apiError ? (
-          <View style={styles.apiErrorBox}>
-            <Text style={styles.apiError}>{apiError}</Text>
+          <View style={shared.errorBox}>
+            <Text style={shared.errorBoxText}>{apiError}</Text>
           </View>
         ) : null}
 
         {success ? (
-          <View style={styles.successBox}>
-            <Text style={styles.successIcon}>&#10003;</Text>
-            <Text style={styles.successText}>Vehicle added successfully!</Text>
-            <View style={styles.successButtons}>
-              <TouchableOpacity style={styles.outlineButton} onPress={handleAddAnother}>
-                <Text style={styles.outlineButtonText}>Add Another Vehicle</Text>
+          <View style={{ alignItems: 'center', paddingVertical: 24 }}>
+            <Text style={{ fontSize: 48, color: colors.lime }}>&#10003;</Text>
+            <Text style={{ color: colors.white, fontSize: 20, fontWeight: '700', marginTop: 8 }}>Vehicle added successfully!</Text>
+            <View style={{ flexDirection: 'row', gap: 12, marginTop: 24 }}>
+              <TouchableOpacity style={shared.buttonOutline} onPress={handleAddAnother}>
+                <Text style={shared.buttonOutlineText}>Add Another</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.button}
+                style={shared.buttonPrimary}
                 onPress={() =>
                   router.push({
                     pathname: '/success',
@@ -119,7 +134,7 @@ export default function VehicleScreen() {
                   })
                 }
               >
-                <Text style={styles.buttonText}>Finish</Text>
+                <Text style={[shared.buttonPrimaryText, { paddingHorizontal: 24 }]}>Finish</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -130,17 +145,22 @@ export default function VehicleScreen() {
               name="make"
               rules={{
                 required: 'Vehicle make is required',
+                maxLength: { value: 100, message: 'Make must be 100 characters or fewer' },
                 validate: (v) => v.trim().length > 0 || 'Vehicle make is required',
               }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <FormInput
-                  label="Make"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.make?.message}
-                  placeholder="e.g. Toyota, Honda, Ford"
-                />
+                <View style={shared.fieldContainer}>
+                  <Text style={shared.label}>Make</Text>
+                  <TextInput
+                    style={[shared.input, errors.make && shared.inputError]}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="e.g. Toyota, Honda, Ford"
+                    placeholderTextColor={colors.neutral600}
+                  />
+                  {errors.make ? <Text style={shared.errorText}>{errors.make.message}</Text> : null}
+                </View>
               )}
             />
 
@@ -149,17 +169,22 @@ export default function VehicleScreen() {
               name="model"
               rules={{
                 required: 'Vehicle model is required',
+                maxLength: { value: 100, message: 'Model must be 100 characters or fewer' },
                 validate: (v) => v.trim().length > 0 || 'Vehicle model is required',
               }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <FormInput
-                  label="Model"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.model?.message}
-                  placeholder="e.g. Camry, Civic, F-150"
-                />
+                <View style={shared.fieldContainer}>
+                  <Text style={shared.label}>Model</Text>
+                  <TextInput
+                    style={[shared.input, errors.model && shared.inputError]}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="e.g. Camry, Civic, F-150"
+                    placeholderTextColor={colors.neutral600}
+                  />
+                  {errors.model ? <Text style={shared.errorText}>{errors.model.message}</Text> : null}
+                </View>
               )}
             />
 
@@ -168,13 +193,13 @@ export default function VehicleScreen() {
               name="year"
               rules={{ required: 'Year is required' }}
               render={({ field: { onChange, value } }) => (
-                <View style={styles.fieldContainer}>
-                  <Text style={styles.label}>Year</Text>
+                <View style={shared.fieldContainer}>
+                  <Text style={shared.label}>Year</Text>
                   {Platform.OS === 'web' ? (
                     <select
                       value={value}
                       onChange={(e: any) => onChange(e.target.value)}
-                      style={selectStyle(!!errors.year, !!value)}
+                      style={webSelectStyle(!!errors.year, !!value)}
                     >
                       <option value="">Select year...</option>
                       {YEARS.map((y) => (
@@ -182,11 +207,9 @@ export default function VehicleScreen() {
                       ))}
                     </select>
                   ) : (
-                    <Text>Year picker not available</Text>
+                    <Text style={{ color: colors.neutral500 }}>Year picker not available</Text>
                   )}
-                  {errors.year ? (
-                    <Text style={styles.fieldError}>{errors.year.message}</Text>
-                  ) : null}
+                  {errors.year ? <Text style={shared.errorText}>{errors.year.message}</Text> : null}
                 </View>
               )}
             />
@@ -196,50 +219,69 @@ export default function VehicleScreen() {
               name="policyNumber"
               rules={{
                 required: 'Insurance policy number is required',
+                maxLength: { value: 100, message: 'Policy number must be 100 characters or fewer' },
                 validate: (v) => v.trim().length > 0 || 'Insurance policy number is required',
               }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <FormInput
-                  label="Insurance Policy Number"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.policyNumber?.message}
-                  placeholder="e.g. POL-123456"
-                />
+                <View style={shared.fieldContainer}>
+                  <Text style={shared.label}>Insurance Policy Number</Text>
+                  <TextInput
+                    style={[shared.input, errors.policyNumber && shared.inputError]}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="e.g. POL-123456"
+                    placeholderTextColor={colors.neutral600}
+                  />
+                  {errors.policyNumber ? <Text style={shared.errorText}>{errors.policyNumber.message}</Text> : null}
+                </View>
               )}
             />
 
             <Controller
               control={control}
               name="expiryDate"
-              rules={{ required: 'Insurance expiry date is required' }}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.fieldContainer}>
-                  <Text style={styles.label}>Insurance Expiry Date</Text>
+              rules={{
+                required: 'Insurance expiry date is required',
+                validate: (v) => {
+                  if (!v) return 'Insurance expiry date is required';
+                  const selected = new Date(v);
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  if (selected <= today) return 'Expiry date must be in the future';
+                  return true;
+                },
+              }}
+              render={({ field: { onChange, value } }) => {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const minDate = tomorrow.toISOString().split('T')[0];
+                return (
+                <View style={shared.fieldContainerLast}>
+                  <Text style={shared.label}>Insurance Expiry Date</Text>
                   {Platform.OS === 'web' ? (
                     <input
                       type="date"
                       value={value}
+                      min={minDate}
                       onChange={(e: any) => onChange(e.target.value)}
-                      style={dateInputStyle(!!errors.expiryDate)}
+                      style={webDateStyle(!!errors.expiryDate)}
                     />
                   ) : (
-                    <Text>Date picker not available</Text>
+                    <Text style={{ color: colors.neutral500 }}>Date picker not available</Text>
                   )}
-                  {errors.expiryDate ? (
-                    <Text style={styles.fieldError}>{errors.expiryDate.message}</Text>
-                  ) : null}
+                  {errors.expiryDate ? <Text style={shared.errorText}>{errors.expiryDate.message}</Text> : null}
                 </View>
-              )}
+                );
+              }}
             />
 
             <TouchableOpacity
-              style={[styles.button, (!isValid || loading) && styles.buttonDisabled]}
+              style={[shared.buttonPrimary, disabled && shared.buttonDisabled]}
               onPress={handleSubmit(onSubmit)}
-              disabled={!isValid || loading}
+              disabled={disabled}
             >
-              <Text style={styles.buttonText}>
+              <Text style={[shared.buttonPrimaryText, disabled && shared.buttonDisabledText]}>
                 {loading ? 'Adding Vehicle...' : 'Add Vehicle'}
               </Text>
             </TouchableOpacity>

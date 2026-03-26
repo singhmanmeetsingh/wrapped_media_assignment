@@ -16,6 +16,7 @@ class CampaignStats(BaseModel):
     total_signups: int
     completed_signups: int
     conversion_rate: float
+    declined_invitations: int
     signups_over_time: list[DailySignupCount]
 
 

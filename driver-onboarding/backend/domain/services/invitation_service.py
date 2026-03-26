@@ -19,6 +19,10 @@ class InvitationAlreadyUsedError(Exception):
     pass
 
 
+class InvitationDeclinedError(Exception):
+    pass
+
+
 class InvitationService:
     def __init__(
         self,
@@ -57,6 +61,8 @@ class InvitationService:
             raise InvalidInvitationError()
         if invitation.used:
             raise InvitationAlreadyUsedError()
+        if invitation.declined:
+            raise InvitationDeclinedError()
 
         campaign = await self._campaign_repo.find_by_campaign_id("")
         # We need to look up by UUID, let's get all and match
@@ -75,3 +81,13 @@ class InvitationService:
         if not invitation:
             raise InvalidInvitationError()
         await self._invitation_repo.mark_used(token)
+
+    async def decline(self, token: UUID) -> None:
+        invitation = await self._invitation_repo.find_by_token(token)
+        if not invitation:
+            raise InvalidInvitationError()
+        if invitation.used:
+            raise InvitationAlreadyUsedError()
+        if invitation.declined:
+            raise InvitationDeclinedError()
+        await self._invitation_repo.mark_declined(token)

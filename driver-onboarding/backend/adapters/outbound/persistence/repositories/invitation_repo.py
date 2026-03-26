@@ -23,6 +23,8 @@ class SqlAlchemyInvitationRepository(InvitationRepository):
             used=model.used,
             created_at=model.created_at,
             used_at=model.used_at,
+            declined=model.declined,
+            declined_at=model.declined_at,
         )
 
     async def save(self, invitation: Invitation) -> Invitation:
@@ -49,5 +51,13 @@ class SqlAlchemyInvitationRepository(InvitationRepository):
             update(InvitationModel)
             .where(InvitationModel.token == token)
             .values(used=True, used_at=datetime.now(timezone.utc))
+        )
+        await self._session.commit()
+
+    async def mark_declined(self, token: UUID) -> None:
+        await self._session.execute(
+            update(InvitationModel)
+            .where(InvitationModel.token == token)
+            .values(declined=True, declined_at=datetime.now(timezone.utc))
         )
         await self._session.commit()

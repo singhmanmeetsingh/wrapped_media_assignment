@@ -17,6 +17,13 @@ def _get_service(db: AsyncSession = Depends(get_db)) -> CampaignService:
     return CampaignService(campaign_repo=SqlAlchemyCampaignRepository(db))
 
 
+@router.get("/campaigns/refs")
+async def get_campaign_refs(service: CampaignService = Depends(_get_service)):
+    """Public endpoint — returns campaign refs for signup page."""
+    campaigns = await service.get_all_campaigns()
+    return {"campaigns": [{"campaign_id": c["campaign_id"], "name": c["name"]} for c in campaigns]}
+
+
 @router.get("/campaigns", response_model=CampaignListResponse)
 async def get_campaigns(
     start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),

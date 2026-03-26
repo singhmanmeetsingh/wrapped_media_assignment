@@ -8,6 +8,13 @@ class CampaignService:
     def __init__(self, campaign_repo: CampaignRepository):
         self._campaign_repo = campaign_repo
 
+    async def get_all_campaigns(self) -> list[dict]:
+        campaigns = await self._campaign_repo.find_all()
+        return [
+            {"campaign_id": c.campaign_id, "name": c.name, "source": c.source}
+            for c in campaigns
+        ]
+
     async def get_campaign_stats(
         self,
         start_date: Optional[datetime] = None,

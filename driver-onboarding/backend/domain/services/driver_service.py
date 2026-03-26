@@ -3,7 +3,7 @@ from typing import Optional
 from uuid import UUID
 
 from domain.entities.driver import Driver
-from domain.ports.repositories import CampaignRepository, DriverRepository
+from domain.ports.repositories import CampaignRepository, DriverRepository, InvitationRepository
 
 logger = logging.getLogger(__name__)
 
@@ -21,9 +21,15 @@ class DriverNotFoundError(Exception):
 
 
 class DriverService:
-    def __init__(self, driver_repo: DriverRepository, campaign_repo: CampaignRepository):
+    def __init__(
+        self,
+        driver_repo: DriverRepository,
+        campaign_repo: CampaignRepository,
+        invitation_repo: Optional[InvitationRepository] = None,
+    ):
         self._driver_repo = driver_repo
         self._campaign_repo = campaign_repo
+        self._invitation_repo = invitation_repo
 
     async def create_driver(
         self,
@@ -33,6 +39,7 @@ class DriverService:
         license_number: str,
         license_state: str,
         ref: Optional[str] = None,
+        invitation_token: Optional[UUID] = None,
     ) -> Driver:
         existing = await self._driver_repo.find_by_email(email)
         if existing:
@@ -47,7 +54,7 @@ class DriverService:
                 logger.warning(f"Unknown campaign ref: {ref}")
 
         driver = Driver(
-            id=UUID(int=0),  # placeholder — repo assigns real UUID
+            id=UUID(int=0),
             full_name=full_name,
             email=email,
             phone=phone,
@@ -56,7 +63,12 @@ class DriverService:
             campaign_id=campaign_uuid,
             created_at=None,
         )
-        return await self._driver_repo.save(driver)
+        saved = await self._driver_repo.save(driver)
+
+        if invitation_token and self._invitation_repo:
+            await self._invitation_repo.mark_used(invitation_token)
+
+        return saved
 
     async def get_driver(self, driver_id: UUID) -> Driver:
         driver = await self._driver_repo.find_by_id_with_vehicles(driver_id)

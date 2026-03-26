@@ -5,6 +5,7 @@ from uuid import UUID
 
 from domain.entities.campaign import Campaign
 from domain.entities.driver import Driver
+from domain.entities.invitation import Invitation
 from domain.entities.user import User
 from domain.entities.vehicle import Vehicle
 
@@ -49,6 +50,17 @@ class CampaignRepository(ABC):
     async def get_signups_over_time(
         self, campaign_uuid: UUID, start_date: Optional[datetime], end_date: Optional[datetime]
     ) -> list[dict]: ...
+
+
+class InvitationRepository(ABC):
+    @abstractmethod
+    async def save(self, invitation: Invitation) -> Invitation: ...
+
+    @abstractmethod
+    async def find_by_token(self, token: UUID) -> Optional[Invitation]: ...
+
+    @abstractmethod
+    async def mark_used(self, token: UUID) -> None: ...
 
 
 class UserRepository(ABC):

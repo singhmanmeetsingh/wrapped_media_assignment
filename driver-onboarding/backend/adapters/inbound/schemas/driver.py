@@ -15,6 +15,7 @@ class DriverCreate(BaseModel):
     license_number: str
     license_state: str
     ref: Optional[str] = None
+    invitation_token: Optional[UUID] = None
 
     @field_validator("full_name")
     @classmethod
